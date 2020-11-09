@@ -1,0 +1,388 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8" />
+
+    <title>登陆系统</title>
+
+    <style>
+
+        #cas {
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+
+</head>
+
+<body>
+    <canvas id="cas"  position : absolute;z-index : -1;></canvas>
+
+    <div style="background-image: url('/img/demo-1-bg.jpg'); width: 400px; height: 300px; border-style: double; float: inherit; position: relative; background-color: aliceblue; margin-left: 440px; margin-top: 250px">
+        <div>
+            <p style="margin-top:80px;margin-left:80px"><img src="~/img/coin07.png" alt="" /> <input id="name" placeholder="请输入账号" type="text" style="background-color:aquamarine;" /></p>
+            <p style="margin-top:20px;margin-left:80px;"><img src="~/img/coin06.png" alt="" /> <input id="pwd" placeholder="请输入密码" type="text" style="background-color:aquamarine;" /></p>
+           
+            <canvas id="canvas" width="120" height="40"></canvas>
+            <input type="text" id="text" />
+            <input type="button" value="提交" id="bt" />
+        </div>
+        <input id="name" style="width:50px;height:30px;margin-left:100px;margin-top:30px;background-color:chartreuse;border-radius:5px;color:black;" type="button" onclick="Login()" value="登陆" />
+        <input id="pwd" style="width:50px;height:30px;margin-left: 30px;margin-top:30px; background-color: khaki; border-radius: 5px; color:black" type="button" onclick="register()" value="注册" />
+    </div>
+
+
+</body>
+
+</html>
+<script>
+
+    function Login() {
+        location.href='/User/First'
+    }
+    //注册
+    function register() {
+        location.href='/User/Login'
+    }
+    //验证码
+    var canvas = document.getElementById("canvas");//演员
+    var context = canvas.getContext("2d");//舞台，getContext() 方法可返回一个对象，该对象提供了用于在画布上绘图的方法和属性。
+    var button = document.getElementById("bt");//获取按钮
+    var input = document.getElementById("text");//获取输入框
+    draw();
+    canvas.onclick = function () {
+        context.clearRect(0, 0, 120, 40);//在给定的矩形内清除指定的像素
+        draw();
+    }
+    // 随机颜色函数
+    function getColor() {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+        return "rgb(" + r + "," + g + "," + b + ")";
+    }
+    function draw() {
+        context.strokeRect(0, 0, 120, 40);//绘制矩形（无填充）
+        var aCode = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"];
+        // 绘制字母
+        var arr = [] //定义一个数组用来接收产生的随机数
+        var num //定义容器接收验证码
+        for (var i = 0; i < 4; i++) {
+            var x = 20 + i * 20;//每个字母之间间隔20
+            var y = 20 + 10 * Math.random();//y轴方向位置为20-30随机
+            var index = Math.floor(Math.random() * aCode.length);//随机索引值
+            var txt = aCode[index];
+            context.font = "bold 20px 微软雅黑";//设置或返回文本内容的当前字体属性
+            context.fillStyle = getColor();//设置或返回用于填充绘画的颜色、渐变或模式，随机
+            context.translate(x, y);//重新映射画布上的 (0,0) 位置，字母不可以旋转移动，所以移动容器
+            var deg = 90 * Math.random() * Math.PI / 180;//0-90度随机旋转
+            context.rotate(deg);// 	旋转当前绘图
+            context.fillText(txt, 0, 0);//在画布上绘制“被填充的”文本
+            context.rotate(-deg);//将画布旋转回初始状态
+            context.translate(-x, -y);//将画布移动回初始状态
+            arr[i] = txt //接收产生的随机数
+        }
+        num = arr[0] + arr[1] + arr[2] + arr[3] //将产生的验证码放入num
+        // 绘制干扰线条
+        for (var i = 0; i < 8; i++) {
+            context.beginPath();//起始一条路径，或重置当前路径
+            context.moveTo(Math.random() * 120, Math.random() * 40);//把路径移动到画布中的随机点，不创建线条
+            context.lineTo(Math.random() * 120, Math.random() * 40);//添加一个新点，然后在画布中创建从该点到最后指定点的线条
+            context.strokeStyle = getColor();//随机线条颜色
+            context.stroke();// 	绘制已定义的路径
+        }
+        // 绘制干扰点，和上述步骤一样，此处用长度为1的线代替点
+        for (var i = 0; i < 20; i++) {
+            context.beginPath();
+            var x = Math.random() * 120;
+            var y = Math.random() * 40;
+            context.moveTo(x, y);
+            context.lineTo(x + 1, y + 1);
+            context.strokeStyle = getColor();
+            context.stroke();
+        }
+
+        //点击按钮验证
+        button.onclick = function () {
+            var text = input.value //获取输入框的值
+            if (text === num) {
+                alert('验证通过')
+            } else {
+                alert('验证失败')
+            }
+        }
+
+    }
+
+    var canvas = document.getElementById("cas");
+
+    var ctx = canvas.getContext("2d");
+
+
+
+
+    resize();
+
+    window.onresize = resize;
+
+
+
+    function resize() {
+
+        canvas.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+        canvas.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+    }
+
+
+
+
+    var RAF = (function () {
+
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
+
+            window.setTimeout(callback, 1000 / 60);
+
+        };
+
+    })();
+
+
+
+
+    // 鼠标活动时，获取鼠标坐标
+
+    var warea = { x: null, y: null, max: 20000 };
+
+    window.onmousemove = function (e) {
+
+        e = e || window.event;
+
+
+
+
+        warea.x = e.clientX;
+
+        warea.y = e.clientY;
+
+    };
+
+    window.onmouseout = function (e) {
+
+        warea.x = null;
+
+        warea.y = null;
+
+    };
+
+
+
+
+    // 添加粒子
+
+    // x，y为粒子坐标，xa, ya为粒子xy轴加速度，max为连线的最大距离
+
+    var dots = [];
+
+    for (var i = 0; i < 300; i++) {
+
+        var x = Math.random() * canvas.width;
+
+        var y = Math.random() * canvas.height;
+
+        var xa = Math.random() * 2 - 1;
+
+        var ya = Math.random() * 2 - 1;
+
+
+
+
+        dots.push({
+
+            x: x,
+
+            y: y,
+
+            xa: xa,
+
+            ya: ya,
+
+            max: 6000
+
+        })
+
+    }
+
+
+
+
+    // 延迟100秒开始执行动画，如果立即执行有时位置计算会出错
+
+    setTimeout(function () {
+
+        animate();
+
+    }, 100);
+
+
+
+
+    // 每一帧循环的逻辑
+
+    function animate() {
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+
+
+        // 将鼠标坐标添加进去，产生一个用于比对距离的点数组
+
+        var ndots = [warea].concat(dots);
+
+
+
+
+        dots.forEach(function (dot) {
+
+
+
+
+            // 粒子位移
+
+            dot.x += dot.xa;
+
+            dot.y += dot.ya;
+
+
+
+
+            // 遇到边界将加速度反向
+
+            dot.xa *= (dot.x > canvas.width || dot.x < 0) ? -1 : 1;
+
+            dot.ya *= (dot.y > canvas.height || dot.y < 0) ? -1 : 1;
+
+
+
+
+            // 绘制点
+
+            ctx.fillRect(dot.x - 0.5, dot.y - 0.5, 1, 1);
+
+
+
+
+            // 循环比对粒子间的距离
+
+            for (var i = 0; i < ndots.length; i++) {
+
+                var d2 = ndots[i];
+
+
+
+
+                if (dot === d2 || d2.x === null || d2.y === null) continue;
+
+
+
+
+                var xc = dot.x - d2.x;
+
+                var yc = dot.y - d2.y;
+
+
+
+
+                // 两个粒子之间的距离
+
+                var dis = xc * xc + yc * yc;
+
+
+
+
+                // 距离比
+
+                var ratio;
+
+
+
+
+                // 如果两个粒子之间的距离小于粒子对象的max值，则在两个粒子间画线
+
+                if (dis < d2.max) {
+
+
+
+
+                    // 如果是鼠标，则让粒子向鼠标的位置移动
+
+                    if (d2 === warea && dis > (d2.max / 2)) {
+
+                        dot.x -= xc * 0.03;
+
+                        dot.y -= yc * 0.03;
+
+                    }
+
+
+
+
+                    // 计算距离比
+
+                    ratio = (d2.max - dis) / d2.max;
+
+
+
+
+                    // 画线
+
+                    ctx.beginPath();
+
+                    ctx.lineWidth = ratio / 2;
+
+                    ctx.strokeStyle = 'rgba(0,0,0,' + (ratio + 0.2) + ')';
+
+                    ctx.moveTo(dot.x, dot.y);
+
+                    ctx.lineTo(d2.x, d2.y);
+
+                    ctx.stroke();
+
+                }
+
+            }
+
+
+
+
+            // 将已经计算过的粒子从数组中删除
+
+            ndots.splice(ndots.indexOf(dot), 1);
+
+        });
+
+
+
+
+        RAF(animate);
+
+    }
+
+
+
+</script>
+
