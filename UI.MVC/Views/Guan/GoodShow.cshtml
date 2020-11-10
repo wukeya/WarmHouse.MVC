@@ -4,13 +4,177 @@
 }
 
 <!DOCTYPE html>
-
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<script src="~/layuiadmin/layui/layui.js"></script>
+<link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>GoodShow</title>
+    <title>商品显示</title>
 </head>
 <body>
-    <h2>我是商品显示</h2>
+    <select id="Select1"></select>
+    <input id="name" type="text" />
+    <input id="Button1" type="button" value="查询" onclick="Show()"  class="btn btn-info"/>
+    <input id="Button1" type="button" value="批量删除" onclick="Pi()" class="btn btn-info" />
+    <table class="table table-bordered">
+        <tr>
+            <td><input id="quan" type="checkbox" onclick="Quan()" /></td>
+            <td>商品名称</td>
+            <td>商品类型</td>
+            <td>商品供应商</td>
+            <td>商品单位</td>
+            <td>商品编号</td>
+            <td>商品图片</td>
+            <td>商品数量</td>
+            <td>商品价钱</td>
+            <td>商品体积</td>
+            <td>商品负责人</td>
+            <td>操作</td>
+        </tr>
+        <tbody id="ag">
+        </tbody>
+    </table>
+    <input id="Button1" type="button" value="首页" class="btn btn-info" onclick="First()" />
+    <input id="Button1" type="button" value="上一页" class="btn btn-info" onclick="Prove()" />
+    <input id="Button1" type="button" value="下一页" class="btn btn-info" onclick="Next()" />
+    <input id="Button1" type="button" value="尾页" class="btn btn-info" onclick="Last()" />
 </body>
 </html>
+
+<script>
+    var p = "http://localhost:65365";
+    var pagIndex = 1;
+    var pagSize = 3;
+    var pagCount = 0;
+    var listCount = 0;
+    //文档就绪函数
+    $(function () {
+        Bang();
+        
+    })
+    //首页
+    function First()
+    {
+        pagIndex = 1;
+        Show();
+    }
+    //上一页
+    function Prove()
+    {
+        if (pagIndex ==1) {
+            alert("已经是首页了");
+            return;
+        }
+        pagIndex--;
+        Show();
+    }
+    //下一页
+    function Next()
+    {
+        if (pagIndex == listCount) {
+            alert("已经是尾页了");
+            return;
+        }
+        pagIndex++;
+        Show();
+    }
+    //尾页
+    function Last()
+    {
+        pagIndex = listCount;
+        Show();
+    }
+    //绑定下拉框
+    function Bang()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/TypeBang",
+            type: "get",
+            success: function (d)
+            {
+                $("#Select1").append('<option value="0">请选择</option>')
+                $.each(d, function () {
+                    var str = '<option value="' + this.typedId + '">' + this.typedName + '</option>'
+                    $("#Select1").append(str);
+                })
+            },
+            complete: function ()
+            {
+                Show();
+            }
+        })
+    }
+    //显示
+    function Show() {
+        $.ajax({
+            url: "http://localhost:65365/Guan/GoodsShow",
+            type: "get",
+            data: { pagIndex: pagIndex, pagSize: pagSize, typeId: $("#Select1").val(), name: $("#name").val() },
+            dataType: "json",
+            success: function (d) {
+               
+                //清空数据
+                $("#ag").empty();
+                $.each(d.a, function () {
+                    var str = '<tr>'
+                        + '<td><input class="Checkbox1" type="checkbox"  value="' + this.goodsId + '"/></td>'
+                        + '<td>' + this.goodsName + '</td>'
+                        + '<td>' + this.typedName + '</td>'
+                        + '<td>' + this.suppleName + '</td>'
+                        + '<td>' + this.unitName + '</td>'
+                        + '<td>' + this.goodsCode + '</td>'
+                        + '<td><img src = "' + p + this.goodsImg+ '" alt = ""  width="70" height="100"/></td>'
+                        + '<td>' + this.goodsNum + '</td>'
+                        + '<td>' + this.goodsMoney + '</td>'
+                        + '<td>' + this.goodsSize + '</td>'
+                        + '<td>' + this.goodsPeople + '</td>'
+                        + '<td><input id="Button1" type="button" value="详情" onclick="Deit(' + this.goodsId + ')" class="btn btn-info" /></td>'
+                        + '<td><input id="Button1" type="button" value="修改" onclick="Update(' + this.goodsId + ')" class="btn btn-info" /></td>'
+                        + '</tr>'
+                    $("#ag").append(str);
+                })
+                pagCount = d.pagCount;
+                listCount = Math.ceil(pagCount / pagSize);
+            }   
+        })
+    }
+    //全选反选
+    function Quan()
+    {
+        $(".Checkbox1").prop("checked", $("#quan").prop("checked"));
+    }
+    //批量删除
+    function Pi()
+    {
+        alert("呼呼呼");
+        //定义一个数组
+        var arr = [];
+
+        $(".Checkbox1:checked").each(function () {
+            arr.push(this.value);        
+        })
+
+        if (arr.toString() == "" || arr.toString() == null) {
+            alert("请选择删除项目");
+            return;
+        }      
+        if (confirm("确认删除吗?")) {
+            alert(arr.toString());
+            $.ajax({
+                url: "http://localhost:65365/Guan/GoodsShan",
+                data: { ids: arr.toString() },
+                type: "get",
+                success: function (d) {
+                    if (d > 0) {
+                        alert("删除成功");
+                        Show();
+                    }
+                }
+            })
+        }          
+    }
+    //调到详情页面
+    function
+</script>
