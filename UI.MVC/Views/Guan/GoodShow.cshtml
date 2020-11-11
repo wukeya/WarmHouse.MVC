@@ -16,8 +16,9 @@
 <body>
     <select id="Select1"></select>
     <input id="name" type="text" />
-    <input id="Button1" type="button" value="查询" onclick="Show()"  class="btn btn-info"/>
-    <input id="Button1" type="button" value="批量删除" onclick="Pi()" class="btn btn-info" />
+    <input id="Button1" type="button" value="查询" onclick="Show()" class="btn btn-info" />
+    <input id="Button1" type="button" value="—批量删除" onclick="Pi()" class="btn btn-info" />
+    <input id="Button1" type="button" value="+添加" onclick="ReturnAdd()" class="btn btn-info" />
     <table class="table table-bordered">
         <tr>
             <td><input id="quan" type="checkbox" onclick="Quan()" /></td>
@@ -130,8 +131,7 @@
                         + '<td>' + this.goodsMoney + '</td>'
                         + '<td>' + this.goodsSize + '</td>'
                         + '<td>' + this.goodsPeople + '</td>'
-                        + '<td><input id="Button1" type="button" value="详情" onclick="Deit(' + this.goodsId + ')" class="btn btn-info" /></td>'
-                        + '<td><input id="Button1" type="button" value="修改" onclick="Update(' + this.goodsId + ')" class="btn btn-info" /></td>'
+                        + '<td><input id="Button1" type="button" value="详情" onclick="Deit(' + this.goodsId + ')" class="btn btn-info" /><input id="Button1" type="button" value="修改" onclick="Update(' + this.goodsId + ')" class="btn btn-info" /><input id="Button3" type="button" value="' + (this.goodsState==0?"上架":"下架") + '" onclick="UpdateState(' + this.goodsId + ')" class="btn btn-info" /></td>'
                         + '</tr>'
                     $("#ag").append(str);
                 })
@@ -148,7 +148,7 @@
     //批量删除
     function Pi()
     {
-        alert("呼呼呼");
+      
         //定义一个数组
         var arr = [];
 
@@ -161,7 +161,7 @@
             return;
         }      
         if (confirm("确认删除吗?")) {
-            alert(arr.toString());
+           
             $.ajax({
                 url: "http://localhost:65365/Guan/GoodsShan",
                 data: { ids: arr.toString() },
@@ -176,5 +176,38 @@
         }          
     }
     //调到详情页面
-    function
+    function Deit(id)
+    {
+        location.href = '/Guan/GoodDeit/?id=' + id;
+    }
+    //跳转到添加页面
+    function ReturnAdd()
+    {
+        location.href='/Guan/GoodAdd'
+    }
+    //跳转到修改页面
+    function Update(id)
+    {
+        location.href = '/Guan/GoodUpdate/?id=' + id;
+    }
+    //修改状态
+    function UpdateState(id)
+    {
+        var state = 0;
+        if ($("#Button3").prop("value") == "上架") {
+            state = 1;
+        }
+        $.ajax({
+            url: "http://localhost:65365/Guan/GoodsUpdateState",
+            data: { id: id, state: state },
+            type: "get",
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("修改成功");
+                    Show();
+                }
+            }
+        })
+    }
 </script>

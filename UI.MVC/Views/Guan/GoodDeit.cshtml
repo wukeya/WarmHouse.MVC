@@ -1,0 +1,96 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>商品详情</title>
+</head>
+<body>
+    <input id="Button1" type="button" value="返回列表" class="btn btn-info" onclick="ReturnShow()" />
+    <table class="table table-bordered">
+        <tr>
+            <td>商品名称</td>
+            <td><input id="name" readonly="readonly" type="text" /></td>
+        </tr>
+        <tr>
+            <td>商品类型</td>
+            <td><input id="tid" readonly="readonly" type="text" /></td>
+        </tr>
+        <tr>
+            <td>商品供应商</td>
+            <td><input id="sid" readonly="readonly" type="text" /></td>
+        </tr>
+        <tr>
+            <td>商品图片</td>
+            <td><img id="img" alt=""  width="70" height="100"/></td>
+        </tr>
+        <tr>
+            <td>商品编码</td>
+            <td><input id="code" readonly="readonly" type="text" /></td>
+        </tr>
+        <tr>
+            <td>商品单位</td>
+            <td><input id="uid" readonly="readonly" type="text" /></td>
+        </tr>
+        <tr>
+            <td>商品数量</td>
+            <td><input id="num" readonly="readonly" type="text" /></td>
+        </tr>
+        <tr>
+            <td>商品价钱</td>
+            <td><input id="money" readonly="readonly" type="text" /></td>
+        </tr>
+        <tr>
+            <td>商品体积</td>
+            <td><input id="size" readonly="readonly" type="text" /></td>
+        </tr>
+        <tr>
+            <td>商品负责人</td>
+            <td><input id="people" readonly="readonly" type="text" /></td>
+        </tr>
+    </table>
+</body>
+</html>
+
+<script>
+    var p = "http://localhost:65365";
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //反填
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/GoodsFan",
+            data: { id:@ViewBag.id},
+            type: "get",
+            dataType: "json",
+            success: function (d)
+            {
+                if (d != null) {
+                    $("#name").val(d.goodsName);
+                    $("#tid").val(d.typedName);
+                    $("#sid").val(d.suppleName);
+                    $("#img").prop("src", p+d.goodsImg)
+                    $("#code").val(d.goodsCode);
+                    $("#uid").val(d.unitName);
+                    $("#num").val(d.goodsNum); 
+                    $("#money").val(d.goodsMoney);
+                    $("#size").val(d.goodsSize);
+                    $("#people").val(d.goodsPeople);
+                }
+            }
+        })
+    }
+    function ReturnShow() {
+        location.href = '/Guan/GoodShow';
+    }
+</script>

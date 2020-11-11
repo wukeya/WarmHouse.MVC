@@ -18,9 +18,36 @@ namespace UI.MVC.Controllers
         {
             return View();
         }
+        //商品详情
+        public IActionResult GoodDeit(int id) 
+        {
+            ViewBag.id = id;
+            return View();
+        }
+        //商品修改
+        public IActionResult GoodUpdate(int id)
+        {
+            ViewBag.id = id;
+            return View();
+        }
         //采购
         public IActionResult Purchase()
         {
+            
+          ViewBag.time=DateTime.Now;
+           
+
+            return View();
+        }
+        //采购订单显示表
+        public IActionResult PurchaseShow()
+        {
+            return View();
+        }
+        //采购订单详情
+        public IActionResult PurchaseDeit(int id)
+        {
+            ViewBag.pid = id;
             return View();
         }
         //入库
