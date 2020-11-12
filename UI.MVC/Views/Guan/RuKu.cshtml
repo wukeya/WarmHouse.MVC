@@ -4,13 +4,60 @@
 }
 
 <!DOCTYPE html>
-
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>RuKu</title>
+    <title>入库页面</title>
 </head>
 <body>
-    <h2>我是入库页面</h2>
+   
+    <table class="table table-bordered">
+        <tr>
+            <td>用户ID</td>
+            <td>信息ID</td>
+            <td>订单编号</td>
+            <td>订单时间</td>
+            <td>是否入库</td>
+            <td>操作</td>
+        </tr>
+        <tbody id="ag"></tbody>
+    </table>
+   
 </body>
 </html>
+<
+<script>
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //显示
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/PurchaseShow",
+            type: "get",
+            success: function (d)
+            {
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.purchaseUid + '</td>'
+                        + '<td>' + this.purchasePid + '</td>'
+                        + '<td>' + this.purchaseCode + '</td>'
+                        + '<td>' + this.purchaseTime + '</td>'
+                        + '<td>' + (this.purchaseState == 0 ? "未入库" : "已入库") + '</td>'
+                        + '<td><input id="Button1" type="button" value="开始入库" ' + (this.purchaseState==0?"":"disabled") + '  class="btn btn-info" onclick="Deit(' + this.purchaseId + ')" /></td>'
+                        + '</tr>'
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    //跳转到详情页面
+    function Deit(id)
+    {
+        location.href = '/Guan/RuKuDeit?id=' + id;
+    }
+</script>

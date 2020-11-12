@@ -1,0 +1,119 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>开始入库</title>
+</head>
+<body>
+    <input id="s" type="button" value="返回到入库" class="btn btn-info" onclick="ReturnRu()" />
+    <table class="table table-bordered">
+        <tr>
+            <td>仓库：</td>
+            <td><select id="cang" onclick="LocationBang()"></select></td>
+        </tr>
+        <tr>
+            <td>仓库库位：</td>
+            <td><select id="location"></select></td>
+        </tr>
+        <tr>
+            <td><input id="save" type="button" value="保存" class="btn btn-info" onclick="Save()" /><input id="ishave" type="text" readonly="readonly" /></td>
+            <td><input id="Button1" type="button" value="取消" class="btn btn-info" onclick="Resert()" /></td>
+        </tr>
+    </table>
+</body>
+</html>
+
+<script>
+    //文档就绪函数
+    $(function () {
+        CangBang();
+        IsRuKu();
+    })
+    //绑定仓库
+    function CangBang()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/WareHouseShow",
+            type: "get",
+            success: function (d)
+            {
+                $.each(d, function () {
+                    str = '<option value="' + this.wareHouseId + '">' + this.wareHouseName + '</option>'
+                    $("#cang").append(str);
+                })
+            }
+        })
+    }
+    //绑定库位
+    function LocationBang()
+    {
+        var cid = $("#cang").val();
+        $.ajax({
+            url: "http://localhost:65365/Guan/LocationShow",
+            data: { wid: cid },
+            type: "get",
+            success: function (d)
+            {
+                $("#location").empty();
+                $.each(d, function () {
+                    str = '<option value="' + this.locationId + '">' + this.locationName + '</option>'
+                    $("#location").append(str);
+                })
+            }
+        })
+    }
+    //保存到库位详细表
+    function Save()
+    {
+        var obj = {};
+        obj.LocationWid = $("#cang").val();
+        obj.LocationLid = $("#location").val();
+        obj.LocationWithOid =@ViewBag.rdetid;
+        $.ajax({
+            url: "http://localhost:65365/Guan/LocationWithAdd?ff=" + JSON.stringify(obj),
+            type: "post",
+            dataType: "json",
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("添加详细成功");
+                    location.href = '/Guan/RuKuDeit?id=' + sessionStorage.getItem("rid");
+
+                }
+            }
+        })
+    }
+    //判断是否已经入库
+    function IsRuKu()
+    {
+        var oid =@ViewBag.rdetid;
+        $.ajax({
+            url: "http://localhost:65365/Guan/IsRuKu",
+            data: { oid: oid },
+            type: 'get',
+            success: function (d)
+            {
+                if (d > 0) {
+                    
+                    $("#save").prop("hidden", "hidden");
+                    $("#ishave").prop("value", "已经入库了");
+                }
+                else {
+                    $("#ishave").prop("hidden", "hidden");
+                }
+            }
+        })
+    }
+    //返回入库
+    function ReturnRu()
+    {
+        location.href = '/Guan/RuKuDeit?id=' + sessionStorage.getItem("rid");
+    }
+</script>
