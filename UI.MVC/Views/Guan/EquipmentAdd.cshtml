@@ -1,16 +1,80 @@
-﻿
+﻿1
 @{
     Layout = null;
 }
 
 <!DOCTYPE html>
-
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>EquipmentAdd</title>
+    <title>设备添加页面</title>
 </head>
 <body>
-    <h2>我是设备添加页面</h2>
+    <table class="table table-bordered">
+        <tr>
+            <td>设备名称</td>
+            <td><input id="EquipmentName" type="text" /></td>
+        </tr>
+        <tr>
+            <td>设备单价</td>
+            <td><select id="EquipmentMoney"></select></td>
+        </tr>
+        <tr>
+            <td>设备状态</td>
+            <td><select id="EquipmentState"></select></td>
+        </tr>
+        <tr>
+            <td>设备数量</td>
+            <td><select id="EquipmentNum"></select></td>
+        </tr>
+        <tr>
+            <td>负责人</td>
+            <td><input id="EquipmentPeople" type="text" /></td>
+        </tr>
+        <tr>
+            <td><input id="Button1" type="button" value="添加" class="btn btn-info" onclick="Add()" /></td>
+            <td><input id="Button2" type="button" value="取消" class="btn btn-info" onclick="Resert()" /></td>
+        </tr>
+    </table>
 </body>
 </html>
+<script>
+    
+    //添加
+    function Add()
+    {
+        var data = new FormData();
+        data.append("files", $("#File1").get(0).files[0]);
+
+        var obj = {};
+        obj.EquipmentName = $("#EquipmentName").val();
+        obj.EquipmentMoney = $("#EquipmentMoney").val();
+        obj.EquipmentState = $("#EquipmentState").val();
+        obj.EquipmentNum = $("#EquipmentNum").val();
+        obj.EquipmentPeople = $("#EquipmentPeople").val();
+
+        $.ajax({
+            url: "http://localhost:65365/Guan/EquipmentAdd?ff=" + JSON.stringify(obj),
+            type: "post",
+            data: data,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("添加成功");
+                    location.href='/Guan/GoodShow'
+                }
+            }
+        })
+
+    }
+    //取消
+    function Resert()
+    {
+        location.reload();
+    }
+</script>
