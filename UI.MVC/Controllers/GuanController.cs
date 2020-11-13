@@ -56,6 +56,20 @@ namespace UI.MVC.Controllers
         {
             return View();
         }
+        //入库详细表
+        public IActionResult RuKuDeit(int id)
+        {
+            
+            ViewBag.rid = id;
+            
+            return View();
+        }
+        //开始入库
+        public IActionResult BeginRuKu(int id) 
+        {
+            ViewBag.rdetid = id;
+            return View();
+        }
         //出库
         public IActionResult ChuKu()
         {
@@ -101,5 +115,12 @@ namespace UI.MVC.Controllers
         {
             return View();
         }
+        //退货显示
+        public IActionResult ReturnShow() 
+        {
+            return View();
+        }
+
+
     }
 }

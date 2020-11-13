@@ -9,10 +9,10 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>采购订单详细表</title>
+    <title>入库详细表</title>
 </head>
 <body>
-    <input id="Button1" type="button" value="返回订单" onclick="ReturnPruchse()"  class="btn btn-info"/>
+    <input id="Button1" type="button" value="返回入库订单表" onclick="ReturnRuKu()"  class="btn btn-info" />
     <table class="table table-bordered">
         <tr>
             <td>订单编号</td>
@@ -26,6 +26,7 @@
             <td>商品价钱</td>
             <td>商品体积</td>
             <td>商品负责人</td>
+            <td>操作</td>
         </tr>
         <tbody id="ag">
         </tbody>
@@ -34,20 +35,21 @@
 </html>
 
 
-
 <script>
-    var p = "http://localhost:65365";
+     var p = "http://localhost:65365";
     //文档就绪函数
     $(function () {
         Show();
+        sessionStorage.setItem("rid",@ViewBag.rid);
     })
     //显示
     function Show()
     {
+
         $.ajax({
             url: "http://localhost:65365/Guan/OrderDeitShow",
             type: "get",
-            data: {pid:@ViewBag.pid},
+            data: {pid:@ViewBag.rid},
             success: function (d)
             {
                 $.each(d, function () {
@@ -55,7 +57,7 @@
                         + '<td>' + this.purchaseCode + '</td>'
                         + '<td>' + this.purchaseTime + '</td>'
                         + '<td>' + this.goodsName + '</td>'
-                        + '<td>' + this.typedName + '</td>' 
+                        + '<td>' + this.typedName + '</td>'
                         + '<td>' + this.unitName + '</td>'
                         + '<td>' + this.goodsCode + '</td>'
                         + '<td><img src = "' + p + this.goodsImg + '" alt = ""  width="70" height="100"/></td>'
@@ -63,14 +65,43 @@
                         + '<td>' + this.goodsMoney + '</td>'
                         + '<td>' + this.goodsSize + '</td>'
                         + '<td>' + this.goodsPeople + '</td>'
+                        + '<td><input id="Button3" type="button" value="开始入库" ' + (this.oState > 0 ? "disabled" : "") + ' class="btn btn-info" onclick="BeginRuKu(' + this.orderId + ')"/><input id="Button3" type="button" value="退货" ' + (this.oState > 0 ? "disabled" : "") + ' class="btn btn-info" onclick="ReturnGood(' + this.orderId + ')"/></td>'
 
                     $("#ag").append(str);
                 })
             }
+
         })
     }
-    function ReturnPruchse()
+    //调到入库
+    function ReturnRuKu()
     {
-        location.href = '/Guan/PurchaseShow';
+        location.href='/Guan/RuKu'
+    }
+
+    //跳转到开始入库
+    function BeginRuKu(id)
+    {
+        location.href = '/Guan/BeginRuKu?id=' + id;
+    }
+    //退货
+    function ReturnGood(id)
+    {
+        var obj = {};
+        obj.ReturnOid = id;
+        obj.ReturnPid =@ViewBag.rid;
+        obj.ReturnState = 0;
+        $.ajax({
+            url: "http://localhost:65365/Guan/ReturndAdd?ff=" + JSON.stringify(obj),
+            data: obj,
+            type: "post",
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("退货成功");
+                    location.reload();
+                }
+            }
+        })
     }
 </script>
