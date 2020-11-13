@@ -6,19 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace UI.MVC.Controllers
 {
-    public class PurchaseController : Controller
+    public class DenLuController : Controller
     {
-        public IActionResult Index()
+        //登录
+        public IActionResult UserdDenLuint()
         {
             return View();
         }
         //注册
-        public IActionResult Login()
-        {
-            return View();
-        }
-        //首页
-        public IActionResult First()
+        public IActionResult UserdZhuCe()
         {
             return View();
         }
