@@ -77,7 +77,7 @@
         obj.LocationLid = $("#location").val();
         obj.LocationWithOid =@ViewBag.rdetid;
         $.ajax({
-            url: "http://localhost:65365/Guan/LocationWithAdd?ff=" + JSON.stringify(obj),
+            url: "http://localhost:65365/Guan/TempLocationWithAdd?ff=" + JSON.stringify(obj),
             type: "post",
             dataType: "json",
             success: function (d)

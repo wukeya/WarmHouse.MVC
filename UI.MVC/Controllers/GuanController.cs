@@ -58,9 +58,19 @@ namespace UI.MVC.Controllers
         //入库详细表
         public IActionResult RuKuDeit(int id)
         {
-            
+            ViewBag.time = DateTime.Now;
             ViewBag.rid = id;
-            
+            return View();
+        }
+        //库位详细表
+        public IActionResult LocationWithShow(int id)
+        {
+            ViewBag.lid = id;
+            return View();
+        }
+        //入库显示表
+        public IActionResult RuKuShow() 
+        {
             return View();
         }
         //开始入库
@@ -70,8 +80,10 @@ namespace UI.MVC.Controllers
             return View();
         }
         //出库
-        public IActionResult ChuKu()
+        public IActionResult ChuKu(int id)
         {
+            ViewBag.sid = id;
+            ViewBag.time = DateTime.Now;
             return View();
         }
         //设备显示
@@ -117,6 +129,18 @@ namespace UI.MVC.Controllers
         //退货显示
         public IActionResult ReturnShow() 
         {
+            return View();
+        }
+        //出库清单
+        public IActionResult ChuKuList() 
+        {
+           
+            return View();
+        }
+        //开始出库
+        public IActionResult BeginChuKu(int id)
+        {
+            ViewBag.gid = id;
             return View();
         }
 

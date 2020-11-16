@@ -1,0 +1,84 @@
+﻿
+@{
+    ViewData["Title"] = "LocationWithShow";
+}
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<h1>库位详细表</h1>
+<input id="Button1" type="button" value="返回入库清单" onclick="ReturnList()" class="btn btn-info" />
+<table class="table table-bordered">
+    <tr>
+        <td>入库清单编号</td>
+        <td>仓库名称</td>
+        <td>库位名称</td>
+        <td>商品名称</td>
+        <td>商品编号</td>
+        <td>商品图片</td>
+        <td>商品数量</td>
+        <td>商品价钱</td>
+        <td>商品体积</td>
+        <td>商品负责人</td>
+    </tr>
+    <tbody id="ag">
+    </tbody>
+</table>
+
+<script>
+    var p = "http://localhost:65365";
+    var code = "";
+    //文档就绪函数
+    $(function () {
+        Serach();
+       
+    })
+    //通过Id查找Code
+    function Serach()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/SearchCode",
+            data: { id:@ViewBag.lid},
+            type: "get",
+            success: function (d)
+            {
+                code = d;
+                
+            },
+            complete: function ()
+            {
+                Show();
+            }
+        })
+    }
+    //显示
+    function Show()
+    {
+        alert(code);
+        $.ajax({
+            url: "http://localhost:65365/Guan/LocationWithShow",
+            type: "get",
+            data: { code: code },
+            success: function (d)
+            {
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.locationRuCode + '</td>'
+                        + '<td>' + this.wareHouseName + '</td>'
+                        + '<td>' + this.locationName + '</td>'
+                        + '<td>' + this.goodsName + '</td>'
+                        + '<td>' + this.goodsCode + '</td>'
+                        + '<td><img src = "' + p + this.goodsImg + '" alt = ""  width="70" height="100"/></td>'
+                        + '<td>' + this.oNum + '</td>'
+                        + '<td>' + this.goodsMoney + '</td>'
+                        + '<td>' + this.goodsSize + '</td>'
+                        + '<td>' + this.goodsPeople + '</td>'
+
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    function ReturnList()
+    {
+        location.href = '/Guan/RuKuShow';
+    }
+</script>
+

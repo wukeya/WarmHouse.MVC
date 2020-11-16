@@ -6,13 +6,29 @@
 <!DOCTYPE html>
 <script src="~/js/jquery.min.js"></script>
 <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<script src="~/My97DatePicker/My97DatePicker/WdatePicker.js"></script>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>入库详细表</title>
 </head>
 <body>
-    <input id="Button1" type="button" value="返回入库订单表" onclick="ReturnRuKu()"  class="btn btn-info" />
+    <input id="Button1" type="button" value="返回入库订单表" onclick="ReturnRuKu()" class="btn btn-info" />
+    <table class="table table-bordered">
+        <tr>
+            <td>入库清单编号</td>
+            <td><input id="code" type="text" /></td>
+        </tr>
+        <tr>
+            <td>入库清单时间</td>
+            <td><input id="time" type="text" onclick="WdatePicker()" /></td>
+        </tr>
+        <tr>
+            <td>入库清单负责人</td>
+            <td><input id="people" type="text" /></td>
+        </tr>
+       
+    </table>
     <table class="table table-bordered">
         <tr>
             <td>订单编号</td>
@@ -31,6 +47,8 @@
         <tbody id="ag">
         </tbody>
     </table>
+    <input id="Button1" type="button" value="保存" class="btn btn-info" onclick="Save()" />
+    <input id="Button1" type="button" value="取消" class="btn btn-info" onclick="Revert()" />
 </body>
 </html>
 
@@ -41,6 +59,8 @@
     $(function () {
         Show();
         sessionStorage.setItem("rid",@ViewBag.rid);
+        $("#code").val("AD" + Math.random().toString().substr(Math.random().toString().indexOf('.') + 1, 5));
+        $("#time").val("@ViewBag.time");
     })
     //显示
     function Show()
@@ -103,5 +123,31 @@
                 }
             }
         })
+    }
+    //保存
+    function Save()
+    {
+        var obj = {};
+        obj.RuchecklistCode = $("#code").val();
+        obj.RuchecklistTime = $("#time").val();
+        obj.RuchecklistPeople = $("#people").val();
+        $.ajax({
+            url: "http://localhost:65365/Guan/RuChecklistAdd?ff=" + JSON.stringify(obj),
+            type: "post",
+            dataType: "json",
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("保存成功");
+                    location.href = '/Guan/RuKuShow';
+                }
+            }
+        })
+    }
+
+    //取消
+    function Revert()
+    {
+        location.reload();
     }
 </script>

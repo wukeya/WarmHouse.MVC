@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewData["Title"] = "ChuKuList";
+}
+
+<h1>出库清单</h1>
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<table class="table table-bordered">
+    <tr>
+        <td>选购清单编号</td>
+        <td>选购清单时间</td>
+        <td>选购清单负责人</td>
+        <td>操作</td>
+    </tr>
+    <tbody id="ag"></tbody>
+</table>
+
+
+<script>
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //显示
+    function Show() {
+        $.ajax({
+            url: "http://localhost:65365/customer/Selectordershow",
+            type: "get",
+            success: function (d) {
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.selectOrderCode + '</td>'
+                        + '<td>' + this.selectOrderTime + '</td>'
+                        + '<td>' + this.selectOrderPeople + '</td>'
+                        + '<td><input id="Button1" type="button" value="查看详情" class="btn btn-info" onclick="Cha(' + this.selectOrderId + ')"/></td>'
+                        + '</tr>'
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    //查看详情
+    function Cha(id) {
+        location.href = '/Guan/ChuKu?id=' + id;
+    }
+</script>

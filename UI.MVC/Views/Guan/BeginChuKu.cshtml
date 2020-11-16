@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewData["Title"] = "BeginChuKu";
+}
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<h1>开始出库</h1>
+
+
+<table class="table table-bordered">
+    <tr>
+        <td>商品名称</td>
+        <td>商品图片</td>
+        <td>商品负责人</td>
+        <td>商品编号</td>
+        <td>商品数量</td>
+        <td>商品体积</td>
+        <td>仓库名称</td>
+        <td>库位名称</td>
+        <td>出库数量</td>
+        <td>出库</td>
+    </tr>
+  
+    <tbody id="ag"></tbody>
+</table>
+
+<script>
+    
+    var p = "http://localhost:65365";
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    
+    //显示
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/BeforeChuKu",
+            data: {id:@ViewBag.gid},
+            type: "get",
+            success: function (d)
+            {
+                alert("需要出库" + sessionStorage.getItem("orderNum") + "个")
+                console.log(d.length);
+                if (d.length == 0) {
+                    var sid = sessionStorage.getItem("sid");
+                    alert("库存没有该商品，请采购该商品");
+                    location.href = '/Guan/ChuKu?id=' + sid;
+                }
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.goodsName + '</td>'
+                        + '<td><img src="' + p + this.goodsImg + '" alt=""  height="100" width="70"/></td>'
+                        + '<td>' + this.goodsPeople + '</td>'
+                        + '<td>' + this.goodsCode + '</td>'
+                        + '<td>' + this.oNum + '</td>'
+                        + '<td>' + this.goodsSize + '</td>'
+                        + '<td>' + this.wareHouseName + '</td>'
+                        + '<td>' + this.locationName + '</td>'
+                        + '<td><input id="a' + this.locationWithId + '" type="text" value="0"/></td>'
+                        + '<td><input id="Button1" type="button" value="出库" class="btn btn-info" onclick="HavingChuKu(' + this.locationWithId + ',' + this.oNum + ')"/></td>'
+                        + '</tr>'
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    //正在出库
+    function HavingChuKu(lid,ounm)
+    {
+        //获取出库清单详细Id
+        var selectid = sessionStorage.getItem("selectId");
+        //获取要出库的数量
+        var selectNum=sessionStorage.getItem("orderNum");
+        //获取文本框的值
+        var num = $("#a" + lid).val();
+        if (num > selectNum) {
+            alert("你是个憨憨吧，不需要那么多");
+            return;
+        }
+        if (num > ounm) {
+            alert("你真是个憨憨，你没有那么多库存");
+            return;
+        }
+        $.ajax({
+            url: "http://localhost:65365/Guan/HavingChuKu",
+            data: { num: num, sid: selectid, lid: lid },
+            type: "get",
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("出库成功");
+                    location.href = '/Guan/ChuKu?id=' + sessionStorage.getItem("sid");
+                }
+            }
+        })
+    }
+</script>

@@ -4,18 +4,66 @@
 }
 
 <h1>退货页面</h1>
-
-<table class="table table-broder">
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<table class="table table-bordered">
     <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td>采购订单</td>
+        <td>采购时间</td>
+        <td>商品名称</td>
+        <td>商品编号</td>
+        <td>商品负责人</td>
+        <td>商品数量</td>
+        <td>退货状态</td>
+        <td>操作</td>
     </tr>
+    <tbody id="ag"></tbody>
 </table>
 
+
+<script>
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //显示
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/guan/ReturndShow",
+            type: "get",
+            success: function (d)
+            {
+                $("#ag").empty();
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.purchaseCode + '</td>'
+                        + '<td>' + this.purchaseTime + '</td>'
+                        + '<td>' + this.goodsName + '</td>'
+                        + '<td>' + this.goodsCode + '</td>'
+                        + '<td>' + this.goodsPeople + '</td>'
+                        + '<td>' + this.oNum + '</td>'
+                        + '<td>' + (this.returnState == 0 ? "未审核" : "已经审核") + '</td>'
+                        + '<td><input id="Button1" type="button" value="删除"  class="btn btn-info" onclick="Shan(' + this.returnId + ')"/></td>'
+                        + '</tr>'
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    //删除
+    function Shan(id)
+    {
+        $.ajax({
+            url: "http://localhost:65365/guan/ReturndShan",
+            data: { ids:id },
+            type: "get",
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("删除成功");
+                    Show();
+                }
+            }
+        })
+    }
+</script>

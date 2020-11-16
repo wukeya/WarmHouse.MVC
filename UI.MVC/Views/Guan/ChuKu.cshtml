@@ -2,15 +2,135 @@
 @{
     Layout = null;
 }
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<script src="~/My97DatePicker/My97DatePicker/WdatePicker.js"></script>
+<input id="Button1" type="button" value="返回入库清单" onclick="ReturnList()" class="btn btn-info" />
+<table class="table table-bordered">
+    <tr>
+        <td>出库清单编号</td>
+        <td><input id="code" type="text" /></td>
+    </tr>
+    <tr>
+        <td>出库清单时间</td>
+        <td><input id="time" type="text"  onclick="WdatePicker()"/></td>
+    </tr>
+    <tr>
+        <td>出库清单UId</td>
+        <td><input id="uid" type="text" /></td>
+    </tr>  
+</table>
+<table class="table table-bordered">
+    <tr>
+        <td>选购清单编号</td>
+        <td>商品名称</td>
+        <td>商品编号</td>
+        <td>商品图片</td>
+        <td>商品数量</td>
+        <td>商品价钱</td>
+        <td>商品体积</td>
+        <td>商品负责人</td>
+        <td>操作</td>
+    </tr>
+    <tbody id="ag">
+    </tbody>
+</table>
+<input id="Button1" type="button" value="保存" onclick="Save()" class="btn btn-info" />
+<input id="Button1" type="button" value="取消" onclick="Resert()" class="btn btn-info" />
+<script>
+    var p = "http://localhost:65365";
+    var code = "";
+    var obj = {};
+    var objall = {};
+    //文档就绪函数
+    $(function () {
+        Serach();
+         $("#code").val("ChuKu" + Math.random().toString().substr(Math.random().toString().indexOf('.') + 1, 5));
+        $("#time").val("@ViewBag.time");
+        sessionStorage.setItem("sid",@ViewBag.sid);
+        
+    })
+    //通过Id查找Code
+    function Serach()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Customer/SelectOrderSerachCode",
+            data: { id:@ViewBag.sid},
+            type: "get",
+            success: function (d)
+            {
+                code = d;
 
-<!DOCTYPE html>
+            },
+            complete: function ()
+            {
+                Show();
+            }
+        })
+    }
+    //显示
+    function Show()
+    {
+        alert(sessionStorage.getItem("sid"))
+        alert(code);
+        $.ajax({
+            url: "http://localhost:65365/Customer/SelectOrderDeitShow",
+            type: "get",
+            data: { code: code },
+            success: function (d)
+            {      
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.selectOrderDeitCode + '</td>'
+                        + '<td>' + this.goodsName + '</td>'
+                        + '<td>' + this.goodsCode + '</td>'
+                        + '<td><img src = "' + p + this.goodsImg + '" alt = ""  width="70" height="100"/></td>'
+                        + '<td>' + this.selectOrderDeitNum + '</td>'
+                        + '<td>' + this.goodsMoney + '</td>'
+                        + '<td>' + this.goodsSize + '</td>'
+                        + '<td>' + this.goodsPeople + '</td>'
+                        + '<td><input id="Button1"  type="button" ' + (this.selectOrderDeitNum>0?"":"disabled") + ' value="开始出库" class="btn btn-info" onclick="BeginChuKu(' + this.goodsId + ','
+                        + this.selectOrderDeitNum + ',' + this.selectOrderDeitId + ')"/></td>'
 
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ChuKu</title>
-</head>
-<body>
-    <h2>我是出库</h2>
-</body>
-</html>
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    function ReturnList()
+    {
+        location.href = '/Guan/ChuKuList';
+    }
+    //开始出库
+    function BeginChuKu(id,num,selectId)
+    {
+        sessionStorage.setItem("orderNum", num);
+        sessionStorage.setItem("selectId", selectId);
+        location.href = '/Guan/BeginChuKu?id=' + id;
+    }
+    //保存
+    function Save()
+    {
+        var obj = {};
+        obj.RetrievealCode = $("#code").val();
+        obj.RetrievealUid = $("#uid").val();
+        obj.RetrievealTime = $("#time").val();
+        $.ajax({
+            url: "http://localhost:65365/Guan/RetrievealAdd?ff=" + JSON.stringify(obj),
+            type: "post",
+            dataType: "json",
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("保存成功");
+                }
+            }
+        })
+    }
+    //取消
+    function Resert()
+    {
+        location.reload();
+    }
+</script>
+

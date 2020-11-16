@@ -1,59 +1,50 @@
 ﻿
 @{
-    Layout = null;
+    ViewData["Title"] = "SelectOrderAdd";
 }
-
-<!DOCTYPE html>
-<script src="~/js/jquery.min.js"></script>
 <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 <script src="~/My97DatePicker/My97DatePicker/WdatePicker.js"></script>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Purchase</title>
-</head>
-<body>
-    <table class="table table-bordered">
-        <tr>
-            <td>用户Id</td>
-            <td><input id="uid" type="text" /></td>
-            <td>信息Id</td>
-            <td><input id="pid" type="text" /></td>
-        </tr>
-        <tr>
-            <td>订单编号</td>
-            <td><input id="code" type="text" /></td>
-            <td>订单时间</td>
-            <td><input id="time" type="text" onclick="WdatePicker()" /></td>
-        </tr>
-    </table>
-    <table class="table table-bordered">
-        <tr>
-            <td><input id="quan" type="checkbox" onclick="Quan()" /></td>
-            <td>商品名称</td>
-            <td>商品类型</td>
-            <td>商品供应商</td>
-            <td>商品单位</td>
-            <td>商品编号</td>
-            <td>商品图片</td>
-            <td>商品数量</td>
-            <td>商品价钱</td>
-            <td>商品体积</td>
-            <td>商品负责人</td>
-        </tr>
-        <tbody id="ag">
-        </tbody>
-    </table>
-    <input id="Button1" type="button" value="首页" class="btn btn-info" onclick="First()" />
-    <input id="Button1" type="button" value="上一页" class="btn btn-info" onclick="Prove()" />
-    <input id="Button1" type="button" value="下一页" class="btn btn-info" onclick="Next()" />
-    <input id="Button1" type="button" value="尾页" class="btn btn-info" onclick="Last()" />
+<h1>选购添加</h1>
+<table class="table table-bordered">
+    <tr>
+        <td>选购清单编号</td>
+        <td><input id="code" type="text" /></td>
+    </tr>
+    <tr>
+        <td>选购清单时间</td>
+        <td><input id="time" type="text" onclick="WdatePicker()" /></td>
+    </tr>
+    <tr>
+        <td>选购清单负责人</td>
+        <td><input id="people" type="text" /></td>
+    </tr>
+</table>
+<table class="table table-bordered">
+    <tr>
+        <td><input id="quan" type="checkbox" onclick="Quan()" /></td>
+        <td>商品名称</td>
+        <td>商品类型</td>
+        <td>商品供应商</td>
+        <td>商品单位</td>
+        <td>商品编号</td>
+        <td>商品图片</td>
+        <td>商品数量</td>
+        <td>商品价钱</td>
+        <td>商品体积</td>
+        <td>商品负责人</td>
+    </tr>
+    <tbody id="ag">
+    </tbody>
+</table>
+<input id="Button1" type="button" value="首页" class="btn btn-info" onclick="First()" />
+<input id="Button1" type="button" value="上一页" class="btn btn-info" onclick="Prove()" />
+<input id="Button1" type="button" value="下一页" class="btn btn-info" onclick="Next()" />
+<input id="Button1" type="button" value="尾页" class="btn btn-info" onclick="Last()" />
 
-    <input id="Button1" type="button" value="保存" class="btn btn-info" onclick="Save()" />
-    <input id="Button1" type="button" value="取消" class="btn btn-info" onclick="Rest()" />
-</body>
+<input id="Button1" type="button" value="保存" class="btn btn-info" onclick="Save()" />
+<input id="Button1" type="button" value="取消" class="btn btn-info" onclick="Rest()" />
 
-</html>
+
 <script>
     var p = "http://localhost:65365";
     var pagIndex = 1;
@@ -143,31 +134,31 @@
         $(".Checkbox1:checked").each(function () {
             arr.push($("#num" + this.value).val());
         })
-        obj.nums = arr.toString();
+        obj.Nums = arr.toString();
         $(".Checkbox1:checked").each(function () {
             arr1.push(this.value);
         })
-        obj.ids = arr1.toString();
-        obj.PurchasePid = $("#pid").val();
-        obj.PurchaseUid = $("#uid").val();
-        obj.PurchaseTime = $("#time").val();
-        obj.PurchaseCode = $("#code").val();
-   
+        obj.Gids = arr1.toString();
+        obj.SelectOrderPeople = $("#people").val();
+        obj.SelectOrderTime = $("#time").val();
+        obj.SelectOrderCode = $("#code").val();
+        obj.SelectOrderState = 0;
+
         $.ajax({
-            url: "http://localhost:65365/Guan/OrderDeitAllAdd?ff=" + JSON.stringify(obj),
+            url: "http://localhost:65365/Customer/SelectOrderAdd?ff=" + JSON.stringify(obj),
             type: "post",
             dataType: "json",
             success: function (d)
             {
                 if (d > 0) {
-                    alert("采购成功");
+                    alert("选购成功");
                     //跳转到采购显示
-                    location.href = '/Guan/PurchaseShow';
+                    location.href = '/Customer/SelectOrderShow';
                 }
             }
         })
     }
-   
+
 
 
 </script>

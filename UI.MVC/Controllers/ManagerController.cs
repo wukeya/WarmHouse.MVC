@@ -8,7 +8,7 @@ namespace UI.MVC.Controllers
 {
     public class ManagerController : Controller
     {
-        public IActionResult Index()
+        public IActionResult First()
         {
             return View();
         }
