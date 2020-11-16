@@ -8,6 +8,7 @@ namespace UI.MVC.Controllers
 {
     public class GuanController : Controller
     {
+
         //显示商品
         public IActionResult GoodShow()
         {
