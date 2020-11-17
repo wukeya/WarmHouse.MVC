@@ -144,7 +144,7 @@ namespace UI.MVC.Controllers
             ViewBag.gid = id;
             return View();
         }
-
+        
 
     }
 }
