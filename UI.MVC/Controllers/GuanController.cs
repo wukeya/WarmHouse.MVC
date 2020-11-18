@@ -144,7 +144,10 @@ namespace UI.MVC.Controllers
             ViewBag.gid = id;
             return View();
         }
-        
-
+        //显示需要调库的信息
+        public IActionResult UpdateLocationShow()
+        {
+            return View();
+        }
     }
 }

@@ -1,0 +1,93 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>修改库位</title>
+</head>
+<body>
+    <table class="table table-bordered">
+        <tr>
+            <td>仓库名称</td>
+            <td><input id="wname" type="text" /></td>
+        </tr>
+        
+        <tr>
+            <td>商品编码</td>
+            <td><input id="lname" type="text" /></td>
+        </tr>
+        <tr>
+            <td><input id="Button1" type="button" value="修改" class="btn btn-info" onclick="Update()" /></td>
+            <td><input id="Button1" type="button" value="取消" class="btn btn-info" onclick="Resert()" /></td>
+        </tr>
+    </table>
+</body>
+</html>
+<script>
+    var p = "http://localhost:65365";
+    //文档就绪函数
+    $(function () {
+        TypeBang();
+    })
+
+    //反填商品\
+    function FanGoods()
+    {
+
+        $.ajax({
+            url: "http://localhost:65365/Guan/UpdateLocationShow",
+            data: { id:@ViewBag.id},
+            type: "get",
+            dataType: "json",
+            success: function (d)
+            {
+                if (d != null) {
+                    $("#wname").val(d.WareHouseName);
+                    $("#lname").val(d.LocationName);
+                }
+            }
+        })
+    }
+    //修改
+    function Update()
+    {
+        var data = new FormData();
+        data.append("files", $("#File1").get(0).files[0]);
+
+        var obj = {};
+        obj.GoodsId=@ViewBag.id;
+        obj.WareHouseName = $("#wname").val();
+        obj.LocationName = $("#lname").val();
+        obj.GoodsState = 1;
+
+        $.ajax({
+            url: "http://localhost:65365/Guan/LocationWithUpdate?ff=" + JSON.stringify(obj),
+            type: "post",
+            data: data,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("修改成功");
+                    location.href='/Guan/UpdateLocationShow'
+                }
+            }
+        })
+
+    }
+    //取消
+    function Resert()
+    {
+        location.reload();
+    }
+</script>
+
