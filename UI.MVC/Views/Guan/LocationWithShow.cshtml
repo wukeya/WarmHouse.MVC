@@ -5,7 +5,7 @@
 <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 <h1>库位详细表</h1>
 <input id="Button1" type="button" value="返回入库清单" onclick="ReturnList()" class="btn btn-info" />
-<input id="Button1" type="button" value="调库" onclick="location.href('/Guan/UpdateLocationShow')" class="btn btn-info" />
+<input id="Button1" type="button" value="调库" onclick="UpdateLocation()" class="btn btn-info" />
 <table class="table table-bordered">
     <tr>
         <td>入库清单编号</td>
@@ -80,6 +80,10 @@
     function ReturnList()
     {
         location.href = '/Guan/RuKuShow';
+    }
+    function UpdateLocation()
+    {
+        location.href = '/Guan/UpdateLocationShow';
     }
 </script>
 
