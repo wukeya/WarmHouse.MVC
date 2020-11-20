@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewData["Title"] = "ChuKuListShow";
+}
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<h1>出库清单</h1>
+<table class="table table-bordered">
+    <tr>
+        <td>出库清单编号</td>
+        <td>出库清单用户Id</td>
+        <td>出库清单时间</td>
+        <td>出库清单状态</td>
+        <td>查看详情</td>
+    </tr>
+    <tbody id="ag">
+    </tbody>
+</table>
+
+<script>
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //显示
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/RetrievealShow",
+            type: "get",
+            success: function (d)
+            {
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.retrievealCode + '</td>'
+                        + '<td>' + this.retrievealUid + '</td>'
+                        + '<td>' + this.retrievealTime + '</td>'
+                        + '<td>' + (this.retrievealState == 0 ? "未出库" : "已出库") + '</td>'
+                        + '<td><input id="Button1" type="button" value="查看" class="btn btn-info" onclick="Cha(' + this.retrievealId + ')" /></td>'
+                        + '</tr>'
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    //查看详情
+    function Cha(id)
+    {
+        location.href = '/Guan/ChuKuDietShow?id=' + id;
+    }
+</script>
+

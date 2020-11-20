@@ -1,5 +1,4 @@
-﻿1
-@{
+﻿@{
     Layout = null;
 }
 
@@ -19,15 +18,11 @@
         </tr>
         <tr>
             <td>设备单价</td>
-            <td><select id="EquipmentMoney"></select></td>
-        </tr>
-        <tr>
-            <td>设备状态</td>
-            <td><select id="EquipmentState"></select></td>
+            <td><input id="EquipmentMoney" type="text" /></td>
         </tr>
         <tr>
             <td>设备数量</td>
-            <td><select id="EquipmentNum"></select></td>
+            <td><input id="EquipmentNum" type="text" /></td>
         </tr>
         <tr>
             <td>负责人</td>
@@ -41,40 +36,35 @@
 </body>
 </html>
 <script>
-    
+
     //添加
-    function Add()
-    {
-        var data = new FormData();
-        data.append("files", $("#File1").get(0).files[0]);
+    function Add() {
 
         var obj = {};
         obj.EquipmentName = $("#EquipmentName").val();
         obj.EquipmentMoney = $("#EquipmentMoney").val();
-        obj.EquipmentState = $("#EquipmentState").val();
+        obj.EquipmentState = 0;
         obj.EquipmentNum = $("#EquipmentNum").val();
         obj.EquipmentPeople = $("#EquipmentPeople").val();
 
         $.ajax({
             url: "http://localhost:65365/Guan/EquipmentAdd?ff=" + JSON.stringify(obj),
             type: "post",
-            data: data,
+            data: obj,
             dataType: "json",
             processData: false,
             contentType: false,
-            success: function (d)
-            {
+            success: function (d) {
                 if (d > 0) {
                     alert("添加成功");
-                    location.href ='/Guan/EquipmentShow'
+                    location.href = '/Guan/EquipmentShow'
                 }
             }
         })
 
     }
     //取消
-    function Resert()
-    {
+    function Resert() {
         location.reload();
     }
 </script>

@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewData["Title"] = "ChuKuDietShow";
+}
+
+<h1>出库清单详细</h1>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<input id="Button1" type="button" value="返回出库清单" onclick="ReturnChuKuList()" class="btn btn-info" />
+<table class="table table-bordered">
+    <tr>
+        <td>出库编号</td>
+        <td>商品名称</td>
+        <td>商品编号</td>
+        <td>商品图片</td>
+        <td>商品数量</td>
+        <td>商品价钱</td>
+        <td>商品体积</td>
+        <td>商品负责人</td>
+        <td>仓库名称</td>
+        <td>库位名称</td>
+    </tr>
+    <tbody id="ag">
+    </tbody>
+</table>
+<script>
+    var code = "";
+    var p = "http://localhost:65365";
+    //文档就绪函数
+    $(function () {
+        Search();
+
+    })
+    //通过Id查找code
+    function Search()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/RetrievealSearchCode?id=" +@ViewBag.cid,
+            type: "get",
+            success: function (d)
+            {
+                code = d;
+                console.log(code);
+            },
+            complete: function ()
+            {
+                Show();
+            }
+        })
+    }
+    //显示
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/RetrievealDeitShow?code=" + code,
+            type: "get",
+            success: function (d)
+            {
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.retrievealDeitCode + '</td>'
+                        + '<td>' + this.goodsName + '</td>'
+                        + '<td>' + this.goodsCode + '</td>'
+                        + '<td><img src = "' + p + this.goodsImg + '" alt = ""  width="70" height="100"/></td>'
+                        + '<td>' + this.retrievealDeitNum + '</td>'
+                        + '<td>' + this.goodsMoney + '</td>'
+                        + '<td>' + this.goodsSize + '</td>'
+                        + '<td>' + this.goodsPeople + '</td>'
+                        + '<td>' + this.wareHouseName + '</td>'
+                        + '<td>' + this.locationName + '</td>'
+
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    //返回出库清单
+    function ReturnChuKuList()
+    {
+        location.href='/Guan/ChuKuListShow'
+    }
+</script>
+

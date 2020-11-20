@@ -4,13 +4,167 @@
 }
 
 <!DOCTYPE html>
-
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>ReportAdd</title>
 </head>
 <body>
-    <h2>报损添加</h2>
+      <table class="table table-bordered">
+          <tr>
+              <td><input id="quan" type="checkbox" onclick="Quan()" /></td>
+              <td>入库清单编号</td>
+              <td>仓库名称</td>
+              <td>库位名称</td>
+              <td>商品名称</td>
+              <td>商品编号</td>
+              <td>商品图片</td>
+              <td>库存数量</td>
+              <td>商品价钱</td>
+              <td>商品体积</td>
+              <td>商品负责人</td>
+              <td>报损数量</td>
+          </tr>
+          <tbody id="ag">
+          </tbody>
+      </table>
+    <input id="Button1" type="button" value="首页" class="btn btn-info" onclick="First()" />
+    <input id="Button1" type="button" value="上一页" class="btn btn-info" onclick="Prove()" />
+    <input id="Button1" type="button" value="下一页" class="btn btn-info" onclick="Next()" />
+    <input id="Button1" type="button" value="尾页" class="btn btn-info" onclick="Last()" />
+
+    <input id="Button1" type="button" value="保存" class="btn btn-info" onclick="Save()" />
+    <input id="Button1" type="button" value="取消" class="btn btn-info" onclick="Rest()" />
 </body>
 </html>
+
+
+<script>
+    var flag = 0;
+    var p = "http://localhost:65365";
+    var pagIndex = 1;
+    var pagSize = 3;
+    var pagCount = 0;
+    var listCount = 0;
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //首页
+    function First() {
+        pagIndex = 1;
+        Show();
+    }
+    //上一页
+    function Prove() {
+        if (pagIndex == 1) {
+            alert("已经是首页了");
+            return;
+        }
+        pagIndex--;
+        Show();
+    }
+    //下一页
+    function Next() {
+        if (pagIndex == listCount) {
+            alert("已经是尾页了");
+            return;
+        }
+        pagIndex++;
+        Show();
+    }
+    //尾页
+    function Last() {
+        pagIndex = listCount;
+        Show();
+    }
+
+    //显示
+    function Show() {
+        $.ajax({
+            url: "http://localhost:65365/Guan/AllLocationWithShow",
+            type: "get",
+            data: { pagIndex: pagIndex, pagSize: pagSize },
+            success: function (d) {
+                $("#ag").empty();
+                $.each(d.a, function () {
+                    var str = '<tr>'
+                        + '<td><input class="Checkbox1" type="checkbox"  value="' + this.locationWithId + '"/></td>'
+                        + '<td>' + this.locationRuCode + '</td>'
+                        + '<td>' + this.wareHouseName + '</td>'
+                        + '<td>' + this.locationName + '</td>'
+                        + '<td>' + this.goodsName + '</td>'
+                        + '<td>' + this.goodsCode + '</td>'
+                        + '<td><img src = "' + p + this.goodsImg + '" alt = ""  width="70" height="100"/></td>'
+                        + '<td>' + this.oNum + '</td>'
+                        + '<td>' + this.goodsMoney + '</td>'
+                        + '<td>' + this.goodsSize + '</td>'
+                        + '<td>' + this.goodsPeople + '</td>'
+                        + '<td><input id="num' + this.locationWithId + '" type="text" /></td>'
+                        + '<td><input id="Hidden' + this.locationWithId + '" type="hidden"  value="' + this.oNum + '"/></td>'
+                    $("#ag").append(str);
+                })
+                pagCount = d.pagCount;
+                listCount = Math.ceil(pagCount / pagSize);
+            }
+        })
+    }
+    
+    //全选反选
+    function Quan() {
+        $(".Checkbox1").prop("checked", $("#quan").prop("checked"));
+    }
+    //获取选中文本框值
+    function Save()
+    {
+        var obj = {};
+        var arr = [];
+        var arr1 =[];
+        $(".Checkbox1:checked").each(function () {
+            arr.push($("#num" + this.value).val());
+        })
+        obj.nums = arr.toString();
+        $(".Checkbox1:checked").each(function () {
+            arr1.push(this.value);
+        })
+        //判断是否超过库存数量了
+        $(".Checkbox1:checked").each(function () {
+            var num1 = $("#num" + this.value).val();
+            var num2 = $("#Hidden" + this.value).val();
+            if (parseInt(num1) > parseInt(num2)) {
+                console.log($("#num" + this.value).val());
+                console.log($("#Hidden" + this.value).val());
+                alert("长眼了没？？？超过库存数量了都");
+                flag = 1;
+            }
+          
+        })
+        obj.gids = arr1.toString();
+        console.log(flag);
+        if (flag == 0) {
+            console.log(JSON.stringify(obj));
+            $.ajax({
+                url: "http://localhost:65365/Guan/ReportAdd?ff=" + JSON.stringify(obj),
+                type: "post",
+                dataType: "json",
+                success: function (d) {
+                    if (d > 0) {
+                        alert("添加报损成功");
+                        location.href = '/Guan/ReportShow';
+                    }
+                }
+            })
+        }
+        
+        
+       
+       
+    }
+
+
+
+</script>
+
+

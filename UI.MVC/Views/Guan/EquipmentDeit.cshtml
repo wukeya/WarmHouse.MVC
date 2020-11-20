@@ -3,14 +3,65 @@
     Layout = null;
 }
 
+
 <!DOCTYPE html>
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>EquipmentDeit</title>
+    <title>设备详情</title>
 </head>
 <body>
-    <h2>我是设备详情表</h2>
+    <input id="Button1" type="button" value="返回列表" class="btn btn-info" onclick="ReturnShow()" />
+    <table class="table table-bordered">
+        <tr>
+            <td>设备名称</td>
+            <td><input id="EquipmentName" type="text" /></td>
+        </tr>
+        <tr>
+            <td>设备单价</td>
+            <td><input id="EquipmentMoney" type="text" /></td>
+        </tr>
+        <tr>
+            <td>设备数量</td>
+            <td><input id="EquipmentNum" type="text" /></td>
+        </tr>
+        <tr>
+            <td>负责人</td>
+            <td><input id="EquipmentPeople" type="text" /></td>
+        </tr>
+    </table>
 </body>
 </html>
+
+<script>
+    var p = "http://localhost:65365";
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //反填
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/EquipmentFan",
+            data: { id:@ViewBag.EquipmentID},
+            type: "get",
+            dataType: "json",
+            success: function (d)
+            {
+                if (d != null) {
+                    $("#EquipmentName").val(d.equipmentName);
+                    $("#EquipmentMoney").val(d.equipmentMoney);
+                    $("#EquipmentNum").val(d.equipmentNum);
+                    $("#EquipmentPeople").val(d.equipmentPeople);
+                }
+            }
+        })
+    }
+    function ReturnShow() {
+        location.href = '/Guan/EquipmentShow';
+    }
+</script>

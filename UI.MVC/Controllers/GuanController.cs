@@ -98,8 +98,9 @@ namespace UI.MVC.Controllers
             return View();
         }
         //设备详情
-        public IActionResult EquipmentDeit()
+        public IActionResult EquipmentDeit(int id)
         {
+            @ViewBag.EquipmentID = id;
             return View();
         }
         //报损添加
@@ -119,6 +120,17 @@ namespace UI.MVC.Controllers
         }
         //仓库显示
         public IActionResult WarmHouseShow()
+        {
+            return View();
+        }
+        //仓库详情显示
+        public IActionResult WarmHouseDeitShow(int id)
+        {
+            ViewBag.wid = id;
+            return View();
+        }
+        //添加库位
+        public IActionResult LocationAdd() 
         {
             return View();
         }
@@ -142,6 +154,17 @@ namespace UI.MVC.Controllers
         public IActionResult BeginChuKu(int id)
         {
             ViewBag.gid = id;
+            return View();
+        }
+        //出库清单显示
+        public IActionResult ChuKuListShow() 
+        {
+            return View();
+        }
+        //出库详情
+        public IActionResult ChuKuDietShow(int id)
+        {
+            ViewBag.cid = id;
             return View();
         }
 

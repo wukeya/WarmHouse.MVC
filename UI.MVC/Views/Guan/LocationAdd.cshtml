@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "LocationAdd";
+}
+
+<h1>添加库位</h1>
+<table class="table table-bordered">
+    <tr>
+        <td>库位名称</td>
+        <td><input id="name" type="text" /></td>
+    </tr>
+    <tr>
+        <td>库位最小值</td>
+        <td><input id="min" type="text" /></td>
+    </tr>
+    <tr>
+        <td>库位最大值</td>
+        <td><input id="max" type="text" /></td>
+    </tr>
+    <tr>
+        <td><input id="Button1" type="button" value="保存" onclick="Save()" /></td>
+        <td><input id="Button1" type="button" value="取消" onclick="Rest()" /></td>
+    </tr>
+</table>
+
+<script>
+    //添加
+    function Save() {
+        var obj = {};
+        obj.LocationWid = 0;
+        obj.LocationName = $("#name").val();
+        obj.LocationMin = $("#min").val();
+        obj.LocationMax = $("#max").val();
+        $.ajax({
+            url: "http://localhost:65365/Guan/TemLocationAdd?ff=" + JSON.stringify(obj),
+            type: "post",
+            dataType: "json",
+            success: function (d)
+            {
+                if (d > 0) {
+                    alert("库位添加成功");
+                    location.href = '/Guan/WarmHouseAdd';
+                }
+            }
+        })
+    }
+</script>
+

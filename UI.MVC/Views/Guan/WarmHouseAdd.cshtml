@@ -4,14 +4,80 @@
 }
 
 <!DOCTYPE html>
-
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>WarmHouseAdd</title>
 </head>
 <body>
-
     <h2>仓库添加</h2>
+    <input id="Button1" type="button" value="添加库位" class="btn btn-info" onclick="ReturnLocation()" />
+    <table class="table table-bordered">
+        <tr>
+            <td>仓库名称：</td>
+            <td><input id="wname" type="text" /></td>
+        </tr>
+    </table>
+
+    <table class="table table-bordered">
+        <tr>
+            <td>库位名称</td>
+            <td>库位最小值</td>
+            <td>库位最大值</td>
+        </tr>
+        <tbody id="ag">
+        </tbody>
+    </table>
+    <input id="Button1" type="button" value="保存" class="btn btn-info" onclick="Save()" />
+    <input id="Button1" type="button" value="取消" class="btn btn-info" onclick="Rest()" />
 </body>
 </html>
+
+<script>
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //显示库位
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/Guan/TemLocationShow",
+            type: "get",
+            dataType: "json",
+            success: function (d)
+            {
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.locationName + '</td>'
+                        + '<td>' + this.locationMin + '</td>'
+                        + '<td>' + this.locationMax + '</td>'
+                        + '</tr>'
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    //跳转到添加库位
+    function ReturnLocation()
+    {
+        location.href='/Guan/LocationAdd'
+    }
+    //添加
+    function Save()
+    {
+        var obj = {};
+        obj.WareHouseName = $("#wname").val();
+        $.ajax({
+            url: "http://localhost:65365/Guan/WarmHouseAdd?ff=" + JSON.stringify(obj),
+            type: "post",
+            dataType: "json",
+            success: function (d)
+            {
+                location.href = '/Guan/WarmHouseShow';
+            }
+        })
+    }
+</script>

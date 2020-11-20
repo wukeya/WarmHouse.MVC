@@ -4,14 +4,54 @@
 }
 
 <!DOCTYPE html>
-
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>WarmHouseShow</title>
+    <title>仓库显示</title>
 </head>
 <body>
-
-    <h2>仓库显示</h2>
+    <table class="table table-bordered">
+        <tr>
+            <td>仓库Id</td>
+            <td>仓库名称</td>
+            <td>查看详情</td>
+        </tr>
+        <tbody id="ag"></tbody>
+    </table>
 </body>
 </html>
+
+<script>
+    //文档就绪函数
+    $(function () {
+        Show();
+    })
+    //显示
+    function Show()
+    {
+        $.ajax({
+            url: "http://localhost:65365/guan/WareHouseShow",
+            type: "get",
+            dataType: "json",
+            success: function (d)
+            {
+                console.log(d);
+                $.each(d, function () {
+                    var str = '<tr>'
+                        + '<td>' + this.wareHouseId + '</td>'
+                        + '<td>' + this.wareHouseName + '</td>'
+                      + '<td><input id="Button1" class="btn btn-info" type="button" value="查看"  onclick="Cha(' + this.wareHouseId + ')"/></td>' +
+                        +'</tr>'
+                    $("#ag").append(str);
+                })
+            }
+        })
+    }
+    //跳转到详情页面
+    function Cha(id)
+    {
+        location.href = '/Guan/WarmHouseDeitShow?id=' + id;
+    }
+</script>

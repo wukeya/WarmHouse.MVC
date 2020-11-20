@@ -1,16 +1,168 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
-<!DOCTYPE html>
 
+<!DOCTYPE html>
+<script src="~/js/jquery.min.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<script src="~/layuiadmin/layui/layui.js"></script>
+<link href="~/layuiadmin/layui/css/layui.css" rel="stylesheet" />
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>EquipmentShow</title>
+    <title>设备详情</title>
 </head>
 <body>
-    <h2>我是设备显示页面</h2>
+    <input id="name" type="text" />
+    <input id="Button1" type="button" value="查询" onclick="Show()" class="btn btn-info" />
+    <input id="Button1" type="button" value="—批量删除" onclick="Pi()" class="btn btn-info" />
+    <input id="Button1" type="button" value="+添加" onclick="ReturnAdd()" class="btn btn-info" />
+    <table class="table table-bordered">
+        <tr>
+            <td><input id="quan" type="checkbox" onclick="Quan()" /></td>
+            <td>设备名称</td>
+            <td>设备单价</td>
+            <td>设备数量</td>
+            <td>设备负责人</td>
+            <td>设备状态</td>
+            <td>操作</td>
+        </tr>
+        <tbody id="ag">
+        </tbody>
+    </table>
+    <input id="Button1" type="button" value="首页" class="btn btn-info" onclick="First()" />
+    <input id="Button1" type="button" value="上一页" class="btn btn-info" onclick="Prove()" />
+    <input id="Button1" type="button" value="下一页" class="btn btn-info" onclick="Next()" />
+    <input id="Button1" type="button" value="尾页" class="btn btn-info" onclick="Last()" />
 </body>
 </html>
+
+<script>
+    var p = "http://localhost:65365";
+    var pagIndex = 1;
+    var pagSize = 3;
+    var pagCount = 0;
+    var listCount = 0;
+    //文档就绪函数
+    $(function () {
+        Show();
+
+    })
+    //首页
+    function First() {
+        pagIndex = 1;
+        Show();
+    }
+    //上一页
+    function Prove() {
+        if (pagIndex == 1) {
+            alert("已经是首页了");
+            return;
+        }
+        pagIndex--;
+        Show();
+    }
+    //下一页
+    function Next() {
+        if (pagIndex == listCount) {
+            alert("已经是尾页了");
+            return;
+        }
+        pagIndex++;
+        Show();
+    }
+    //尾页
+    function Last() {
+        pagIndex = listCount;
+        Show();
+    }
+
+    //显示
+    function Show() {
+        $.ajax({
+            url: "http://localhost:65365/Guan/EquipmentShow",
+            type: "get",
+            data: { pagIndex: pagIndex, pagSize: pagSize, name: $("#name").val() },
+            dataType: "json",
+            success: function (d) {
+
+                //清空数据
+                $("#ag").empty();
+                $.each(d.a, function () {
+                    var str = '<tr>'
+                        + '<td><input class="Checkbox1" type="checkbox"  value="' + this.equipmentId + '"/></td>'
+                        + '<td>' + this.equipmentName + '</td>'
+                        + '<td>' + this.equipmentMoney + '</td>'
+                        + '<td>' + this.equipmentNum + '</td>'
+                        + '<td>' + this.equipmentPeople + '</td>'
+                        + '<td>' + (this.equipmentState == 0 ? "不能使用" : "正常使用") + '</td>'
+                        + '<td><input id="Button1" type="button" value="详情" onclick="Deit(' + this.equipmentId + ')" class="btn btn-info" /><input id="Button1" type="button" value="修改" onclick="Update(' + this.equipmentId + ')" class="btn btn-info" /><input id="B'+ this.equipmentId + '" type="button" value="' + (this.equipmentState == 0 ? "正常" : "不正常") + '" onclick="UpdateState(' + this.equipmentId + ')" class="btn btn-info" /></td>'
+                        + '</tr>'
+                    $("#ag").append(str);
+                })
+                pagCount = d.pagCount;
+                listCount = Math.ceil(pagCount / pagSize);
+            }
+        })
+    }
+    //全选反选
+    function Quan() {
+        $(".Checkbox1").prop("checked", $("#quan").prop("checked"));
+    }
+    //批量删除
+    function Pi() {
+
+        //定义一个数组
+        var arr = [];
+
+        $(".Checkbox1:checked").each(function () {
+            arr.push(this.value);
+        })
+
+        if (arr.toString() == "" || arr.toString() == null) {
+            alert("请选择删除项目");
+            return;
+        }
+        if (confirm("确认删除吗?")) {
+
+            $.ajax({
+                url: "http://localhost:65365/Guan/EquipmentShan",
+                data: { ids: arr.toString() },
+                type: "get",
+                success: function (d) {
+                    if (d > 0) {
+                        alert("删除成功");
+                        Show();
+                    }
+                }
+            })
+        }
+    }
+    //调到详情页面
+    function Deit(id) {
+        location.href = '/Guan/EquipmentDeit/?id=' + id;
+    }
+    //跳转到添加页面
+    function ReturnAdd() {
+        location.href = '/Guan/EquipmentAdd'
+    }
+    //修改状态
+    function UpdateState(id) {
+        var state = 0;
+        if ($("#B" + id).prop("value") == "正常") {
+            state = 1;
+        }
+        $.ajax({
+            url: "http://localhost:65365/Guan/EquipmentStateUpdate",
+            data: { id: id, state: state },
+            type: "get",
+            success: function (d) {
+                if (d > 0) {
+                    alert("修改成功");
+                    Show();
+                }
+            }
+        })
+    }
+</script>

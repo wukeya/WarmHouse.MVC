@@ -1,35 +1,26 @@
 ﻿
 @{
-    Layout = null;
+    ViewData["Title"] = "WarmHouseDeitShow";
 }
 
-<!DOCTYPE html>
-<script src="~/js/jquery.min.js"></script>
-<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>ReportShow</title>
-</head>
-<body>
-    <table class="table table-bordered">
-        <tr>
-            <td>入库清单编号</td>
-            <td>仓库名称</td>
-            <td>库位名称</td>
-            <td>商品名称</td>
-            <td>商品编号</td>
-            <td>商品图片</td>
-            <td>商品数量</td>
-            <td>商品价钱</td>
-            <td>商品体积</td>
-            <td>商品负责人</td>
-        </tr>
-        <tbody id="ag">
-        </tbody>
-    </table>
-</body>
-</html>
+<h1>仓库详情显示</h1>
+<input id="Button1" type="button" value="返回仓库显示" class="btn btn-info"  onclick="ReturnWarm()"/>
+<table class="table table-bordered">
+    <tr>
+        <td>入库清单编号</td>
+        <td>仓库名称</td>
+        <td>库位名称</td>
+        <td>商品名称</td>
+        <td>商品编号</td>
+        <td>商品图片</td>
+        <td>商品数量</td>
+        <td>商品价钱</td>
+        <td>商品体积</td>
+        <td>商品负责人</td>
+    </tr>
+    <tbody id="ag">
+    </tbody>
+</table>
 
 <script>
     var p = "http://localhost:65365";
@@ -39,12 +30,13 @@
     })
     //显示
     function Show() {
-       
+
         $.ajax({
-            url: "http://localhost:65365/Guan/ReportShow",
+            url: "http://localhost:65365/Guan/WareHouseDeitShow",
             type: "get",
+            data: {id:@ViewBag.wid},
             success: function (d) {
-                $.each(d.a, function () {
+                $.each(d, function () {
                     var str = '<tr>'
                         + '<td>' + this.locationRuCode + '</td>'
                         + '<td>' + this.wareHouseName + '</td>'
@@ -62,6 +54,12 @@
             }
         })
     }
-
+    //返回显示仓库
+    function ReturnWarm()
+    {
+        location.href = '/Guan/WarmHouseShow';
+    }
 </script>
+
+
 

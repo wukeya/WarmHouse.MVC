@@ -33,7 +33,7 @@
     <div style="background-image: url('/img/demo-1-bg.jpg'); width: 400px; height: 300px; border-style: double; float: inherit; position: relative; background-color: aliceblue; margin-left: 440px; margin-top: 250px">
         <div>
             <p style="margin-top:80px;margin-left:80px"><img src="~/img/coin07.png" alt="" /> <input id="name" placeholder="请输入账号" type="text" style="background-color:aquamarine;" /></p>
-            <p style="margin-top:20px;margin-left:80px;"><img src="~/img/coin06.png" alt="" /> <input id="pwd" placeholder="请输入密码" type="text" style="background-color:aquamarine;" /></p>
+            <p style="margin-top:20px;margin-left:80px;"><img src="~/img/coin06.png" alt="" /> <input id="pwd" placeholder="请输入密码" type="password" style="background-color:aquamarine;" /></p>
            
             <canvas id="canvas" width="120" height="40"></canvas>
             <input type="text" id="text" />
@@ -48,9 +48,27 @@
 
 </html>
 <script>
-
+    var flag = 0;
     function Login() {
-        location.href='/User/First'
+        if (flag==1) {
+            $.ajax({
+                url: "http://localhost:65365/DengLu/UserLogin",
+                data: { name: $("#name").val(), pass: $("#pwd").val() },
+                type: "get",
+                success: function (d) {
+                    if (d != null) {
+                        alert("登录成功");
+                        sessionStorage.setItem("user", d);
+                        location.href = '/User/First';
+                    }
+                }
+            })
+        }
+        else {
+            alert("请先验证验证码");
+            return;
+        }
+        
     }
     //注册
     function register() {
@@ -118,7 +136,8 @@
         button.onclick = function () {
             var text = input.value //获取输入框的值
             if (text === num) {
-                alert('验证通过')
+                alert('验证通过');
+                flag = 1;
             } else {
                 alert('验证失败')
             }
